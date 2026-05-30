@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Macintosh</title>
+
+    <link rel="icon" type="image/webp"
+          href="https://raw.githubusercontent.com/Macintosh-HD/Macintosh-HD.github.io/main/happy_mac_original.webp">
+
+    <link rel="stylesheet" href="https://unpkg.com/@sakun/system.css">
+
+    <style>
+        html, body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        body {
+            background: white;
+        }
+
+        .window {
+            position: fixed;
+            inset: 0;
+            width: 100vw;
+            height: 100vh;
+            margin: 0;
+            box-sizing: border-box;
+            border-radius: 0;
+        }
+
+        .window-pane {
+            height: calc(100vh - 36px);
+            overflow: auto;
+            padding: 16px;
+            box-sizing: border-box;
+        }
+
+        .layout {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 20px;
+        }
+
+        .main-content {
+            flex: 1;
+        }
+
+        .happy-mac {
+            width: 128px;
+            height: auto;
+            margin-bottom: 16px;
+            image-rendering: pixelated;
+        }
+
+        .macintosh-text {
+            font-family: Chicago, "ChicagoFLF", "Pixelated MS Sans Serif", monospace;
+            font-size: 18px;
+            font-weight: bold;
+            letter-spacing: 0;
+            margin: 0;
+        }
+
+        .discord-widget {
+            width: 350px;
+            border: 2px solid black;
+            padding: 10px;
+            box-sizing: border-box;
+            background: white;
+            flex-shrink: 0;
+            font-family: Chicago, "ChicagoFLF", "Pixelated MS Sans Serif", monospace;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .discord-widget * {
+            font-family: inherit;
+        }
+
+        .discord-widget-title {
+            margin: 0 0 10px 0;
+            padding-bottom: 6px;
+            border-bottom: 2px solid black;
+        }
+
+        .discord-count {
+            margin-bottom: 10px;
+        }
+
+        .members {
+            max-height: 320px;
+            overflow-y: auto;
+            border: 1px solid black;
+            padding: 6px;
+            margin-bottom: 10px;
+        }
+
+        .member {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin: 4px 0;
+            font-size: 14px;
+            font-weight: normal;
+        }
+
+        .member img {
+            width: 24px;
+            height: 24px;
+            border: 1px solid black;
+        }
+
+        .join-btn {
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+<div class="window">
+    <div class="title-bar">
+        <button class="close"></button>
+        <h1 class="title">Macintosh</h1>
+        <button class="resize"></button>
+    </div>
+
+    <div class="separator"></div>
+
+    <div class="window-pane">
+
+        <div class="layout">
+
+            <div class="main-content">
+
+                <img
+                    class="happy-mac"
+                    src="https://raw.githubusercontent.com/Macintosh-HD/Macintosh-HD.github.io/main/happy_mac_original.webp"
+                    alt="Happy Mac"
+                >
+
+                <p class="macintosh-text">
+                    Welcome to Macintosh, a community dedicated to classic Apple computers,
+                    vintage Macintosh software, retro gaming, hardware restoration, Mac OS,
+                    collecting, preservation, emulation, development, and the rich history
+                    of the Macintosh platform. Whether you own a Macintosh 128K, a colorful
+                    iMac G3, a Power Mac G4, or simply enjoy exploring the software and
+                    hardware that helped shape personal computing, you'll find a home here.
+                    Share projects, show off your collection, get technical support, discuss
+                    classic operating systems, discover forgotten software, and connect with
+                    fellow enthusiasts who continue to keep the Macintosh legacy alive.
+                </p>
+
+            </div>
+
+            <aside class="discord-widget">
+
+                <p class="discord-widget-title">
+                    Macintosh Discord
+                </p>
+
+                <div class="discord-count" id="count">
+                    Connecting...
+                </div>
+
+                <div class="members" id="members">
+                    Loading users...
+                </div>
+
+                <button class="btn join-btn"
+                        onclick="window.open('https://discord.gg/macintosh','_blank')">
+                    Join Macintosh
+                </button>
+
+            </aside>
+
+        </div>
+
+    </div>
+</div>
+
+<script>
+function loadWidget() {
+    fetch("https://discord.com/api/guilds/1493348750549323916/widget.json")
+        .then(response => response.json())
+        .then(data => {
+
+            document.getElementById("count").textContent =
+                data.presence_count + " Users Online";
+
+            const members = document.getElementById("members");
+            members.innerHTML = "";
+
+            data.members.forEach(member => {
+
+                const div = document.createElement("div");
+
+                div.className = "member";
+
+                div.innerHTML = `
+                    <img src="${member.avatar_url}" alt="${member.username}">
+                    <span>${member.username}</span>
+                `;
+
+                members.appendChild(div);
+
+            });
+
+        })
+        .catch(error => {
+
+            document.getElementById("count").textContent =
+                "Unable to connect.";
+
+            document.getElementById("members").textContent =
+                "Connection failed.";
+
+            console.error(error);
+
+        });
+}
+
+loadWidget();
+setInterval(loadWidget, 30000);
+</script>
+
+</body>
+</html>
